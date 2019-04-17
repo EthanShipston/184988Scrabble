@@ -1,4 +1,4 @@
-﻿/* Ethan Shipston
+/* Ethan Shipston
  * 184988Scrabble
  * 4/16/2019
  * A program which finds all possible words given a dictionary and a handfull of letters (it helps you cheat at scrabble)
@@ -25,6 +25,8 @@ namespace _184988Scrabble
     /// </summary>
     public partial class MainWindow : Window
     {
+        string[,] dic = new string[3, 5];
+        //string[,] dic = new string[26, 99999];
         public MainWindow()
         {
             InitializeComponent();
@@ -32,15 +34,49 @@ namespace _184988Scrabble
             string tiles = sg.drawInitialTiles().ToString();
             MessageBox.Show(sg.drawInitialTiles());
 
-            string dic = "";
-            System.IO.StreamReader sr = new System.IO.StreamReader("Dictionary.txt");
+            System.IO.StreamReader sr = new System.IO.StreamReader("dictSimple.txt");
 
-            while (!sr.EndOfStream)
+
+            for (int i = 0; i < 26; i++)
             {
-                dic += sr.ReadLine();
-                
+                int ii = 0;
+                string dep = "";
+                bool endletter = false;
+
+                while (endletter == false)
+                {
+
+                    dic[i, ii] = sr.ReadLine();
+                    if (dic[i, ii] != null)
+                    {
+                        dic[i, ii] = dic[i, ii].ToUpper();
+
+                        if (ii == 0)
+                        {
+                            dep = dic[i, ii];
+                        }
+
+                        if (!dic[i, ii].Contains(dep))
+                        { 
+                            endletter = true;
+                        }
+                            ii++;
+                        }
+                        else
+                        {
+                            endletter = true;
+                        }
+                    Console.WriteLine(i + "," + ii);
+                }
             }
-            Console.WriteLine(dic);
+        }
+
+        private void btnRun_Click(object sender, RoutedEventArgs e)
+        {
+            int.TryParse(txtInput.Text.Substring(0, 1), out int i);
+            int.TryParse(txtInput.Text.Substring(3, txtInput.Text.Length - 3), out int ii);
+
+            lblOutput.Content = dic[i, ii];
         }
     }
 }
