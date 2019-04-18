@@ -25,7 +25,7 @@ namespace _184988Scrabble
     /// </summary>
     public partial class MainWindow : Window
     {
-        string[,] dic = new string[3, 5];
+        string[,] dic = new string[26, 30000];
         //string[,] dic = new string[26, 99999];
         public MainWindow()
         {
@@ -34,49 +34,80 @@ namespace _184988Scrabble
             string tiles = sg.drawInitialTiles().ToString();
             MessageBox.Show(sg.drawInitialTiles());
 
-            System.IO.StreamReader sr = new System.IO.StreamReader("dictSimple.txt");
+            System.IO.StreamReader sr = new System.IO.StreamReader("Dictionary.txt");
 
-
+            bool test = false;
+            string dep = "";
             for (int i = 0; i < 26; i++)
             {
                 int ii = 0;
-                string dep = "";
                 bool endletter = false;
+
 
                 while (endletter == false)
                 {
-
-                    dic[i, ii] = sr.ReadLine();
-                    if (dic[i, ii] != null)
+                    if (test == true)
                     {
-                        dic[i, ii] = dic[i, ii].ToUpper();
+                        ii++;
+                        test = false;
+                    }
 
-                        if (ii == 0)
+                    else
+                    {
+                        dic[i, ii] = sr.ReadLine();
+
+                        if (dic[i, ii] != null)
                         {
-                            dep = dic[i, ii];
-                        }
+                            if (dic[i, ii].Length > 7)
+                            {
+                                dic[i, ii] = null;
+                            }
+                            else
+                            {
+                                dic[i, ii] = dic[i, ii].ToUpper();
 
-                        if (!dic[i, ii].Contains(dep))
-                        { 
-                            endletter = true;
-                        }
-                            ii++;
+                                if (ii == 0)
+                                {
+                                    dep = dic[i, ii];
+                                }
+
+                                if (!dic[i, ii].Contains(dep))
+                                {
+                                    endletter = true;
+                                    dic[i + 1, 0] = dic[i, ii];
+                                    dep = dic[i, ii];
+                                    dic[i, ii] = null;
+                                    test = true;
+                                }
+                                ii++;
+                                Console.WriteLine(i + "," + ii);
+                            }
                         }
                         else
                         {
                             endletter = true;
                         }
-                    Console.WriteLine(i + "," + ii);
+                    }
                 }
             }
         }
 
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
-            int.TryParse(txtInput.Text.Substring(0, 1), out int i);
-            int.TryParse(txtInput.Text.Substring(3, txtInput.Text.Length - 3), out int ii);
+            /*
+            string input = txtInput.Text;
+            string first = input.Substring(0, input.IndexOf(","));
+            string last = input.Substring(input.IndexOf(",") + 1);
+
+            int.TryParse(first, out int i);
+            int.TryParse(last, out int ii);
 
             lblOutput.Content = dic[i, ii];
+            */
+
+
+
         }
+
     }
 }
