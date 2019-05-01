@@ -25,89 +25,70 @@ namespace _184988Scrabble
     /// </summary>
     public partial class MainWindow : Window
     {
-        string[,] dic = new string[26, 30000];
-        //string[,] dic = new string[26, 99999];
         public MainWindow()
         {
             InitializeComponent();
             ScrabbleGame sg = new ScrabbleGame();
             string tiles = sg.drawInitialTiles().ToString();
-            MessageBox.Show(sg.drawInitialTiles());
+            MessageBox.Show(tiles);
+            string[] tilesAr = new string[7];
+            string[] wordsAr = new string[26];
+
+            for (int i = 0; i < 7; i++)
+            {
+                tilesAr[i] = tiles.Substring(i, 1);
+            }
 
             System.IO.StreamReader sr = new System.IO.StreamReader("Dictionary.txt");
 
-            bool test = false;
-            string dep = "";
-            for (int i = 0; i < 26; i++)
+            string dep = sr.ReadLine();
+            int iii = 0;
+            for (int i = 0; i < 235882; i++)
             {
-                int ii = 0;
-                bool endletter = false;
+                string temp = "Not Null Idiot";
+                temp = sr.ReadLine();
+                temp = temp.ToUpper();
+                wordsAr[iii] = dep + ": ";
 
-
-                while (endletter == false)
+                if (temp.Length <= 7)
                 {
-                    if (test == true)
+                    if (temp.Contains(dep))
                     {
-                        ii++;
-                        test = false;
-                    }
+                        string testWord = temp;
+                        int wildcards = 0;
+                        int missingLetters = 0;
 
-                    else
-                    {
-                        dic[i, ii] = sr.ReadLine();
-
-                        if (dic[i, ii] != null)
+                        for (int ii = 0; ii < 7; ii++)
                         {
-                            if (dic[i, ii].Length > 7)
+                            if (tilesAr[ii] == " ")
                             {
-                                dic[i, ii] = null;
+                                wildcards++;
+                            }
+                            if (testWord.Contains(tilesAr[ii]))
+                            {
+                                testWord = testWord.Remove(testWord.IndexOf(tilesAr[ii]));
                             }
                             else
                             {
-                                dic[i, ii] = dic[i, ii].ToUpper();
-
-                                if (ii == 0)
-                                {
-                                    dep = dic[i, ii];
-                                }
-
-                                if (!dic[i, ii].Contains(dep))
-                                {
-                                    endletter = true;
-                                    dic[i + 1, 0] = dic[i, ii];
-                                    dep = dic[i, ii];
-                                    dic[i, ii] = null;
-                                    test = true;
-                                }
-                                ii++;
-                                Console.WriteLine(i + "," + ii);
+                                missingLetters++;
                             }
                         }
-                        else
+
+                        if (!wordsAr[iii].Contains(temp))
                         {
-                            endletter = true;
+                            if (wildcards >= missingLetters || missingLetters == 0)
+                            {
+                                wordsAr[iii] += temp + ", ";
+                            }
                         }
+                    }
+                    else
+                    {
+                        dep = temp;
+                        iii++;
                     }
                 }
             }
         }
-
-        private void btnRun_Click(object sender, RoutedEventArgs e)
-        {
-            /*
-            string input = txtInput.Text;
-            string first = input.Substring(0, input.IndexOf(","));
-            string last = input.Substring(input.IndexOf(",") + 1);
-
-            int.TryParse(first, out int i);
-            int.TryParse(last, out int ii);
-
-            lblOutput.Content = dic[i, ii];
-            */
-
-
-
-        }
-
     }
 }
